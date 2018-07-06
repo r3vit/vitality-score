@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -26,10 +27,12 @@ func main() {
 
 	// Prepare the js slice.
 	type JSData struct {
+		Labels        []string
 		VitalitySlice []int
 	}
 	jsData := JSData{}
 	for i := 0; i < len(vitality); i++ {
+		jsData.Labels = append(jsData.Labels, strconv.Itoa(i))
 		jsData.VitalitySlice = append(jsData.VitalitySlice, int(vitality[i]))
 	}
 
