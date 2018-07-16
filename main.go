@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Folder path for repo.
-	folder := "./data/go"
+	folder := "./data/daf-dataportal-backend"
 	days := 60
 
 	// Logrus.

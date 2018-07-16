@@ -132,10 +132,17 @@ func CalculateRepoActivity(folder string, days int) (float64, map[int]float64, e
 		releaseHistory = ranges("releaseHistory", releaseHistoryLastDays(tagsPerDays[i]))
 
 		repoActivity = float64(userCommunity) + float64(codeActivity) + float64(releaseHistory) + ranges("longevity", float64(longevity))
+		if repoActivity > 100 {
+			repoActivity = 100
+		}
 		vitalityIndex[i] = repoActivity
 	}
 
-	return vitalityIndex[0], vitalityIndex, nil
+	vitalityIndexTotal := mean(vitalityIndex)
+	if vitalityIndexTotal > 100 {
+		vitalityIndexTotal = float64(100)
+	}
+	return float64(int(vitalityIndexTotal)), vitalityIndex, nil
 }
 
 // userCommunityLastDays returns the number of unique commits authors.
@@ -189,6 +196,7 @@ func extractAllTagsCommit(r *git.Repository) ([]*object.Commit, error) {
 	return allTags, nil
 }
 
+// extractAllCommits returns all the commits.
 func extractAllCommits(r *git.Repository) ([]*object.Commit, error) {
 	var commits []*object.Commit
 
@@ -284,4 +292,14 @@ func ranges(name string, value float64) float64 {
 	}
 
 	return 0
+}
+
+// mean return the mean of all the points.
+func mean(points map[int]float64) float64 {
+	var total float64
+	for _, point := range points {
+		total += point
+	}
+
+	return total / float64(len(points))
 }
